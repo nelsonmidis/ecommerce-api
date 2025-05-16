@@ -10,10 +10,11 @@ app.get("/", (req: Request, res: Response) => {
 
 // id 
 let id = 0;
+type User = {id: number; nome: string; email: string;};
 
 // lista global 
 
-let usuarios: {id: number, nome: string, email: string}[] = [];
+let usuarios: User[] = [];
 
 // app get 
 
@@ -24,7 +25,11 @@ app.get("/users", (req: Request, res: Response) => {
 // app get para pegar só um registro
 // dependendo da info que eu enviar 
 
-
+app.get("/users/:id", (req: Request, res: Response) => {
+let userId = Number(req.params.id);
+let user = usuarios.find(user => user.id === userId);
+res.send(user);
+});
 
 // app post 
 
@@ -35,6 +40,20 @@ usuarios.push(user);
 res.send({
     message: "Usuario criado com sucesso!"
 });
+});
+
+// app.put
+
+app.put("/users/:id", (req: Request, res: Response) => {
+    let userId = Number(req.params.id);
+    let user = req.body; 
+    let indexOf = usuarios.findIndex(_user => _user.id === userId);
+    usuarios[indexOf].nome = user.nome;
+    usuarios[indexOf].email = user.email;
+    res.send({
+        message: "Usuario alterado com sucesso!"
+    })
+
 });
 
 // app listen 
