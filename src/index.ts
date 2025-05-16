@@ -2,6 +2,8 @@ import express, { Request, Response } from "express";
 // app nao é uma palavra nativa. Neste caso ea está sendo um "tipo" de express
 const app = express();
 
+app.use(express.json());
+
 app.get("/", (req: Request, res: Response) => {
     res.send("Bem Vindo ao Curso de Node Js - ver5 - usando npm start");
 });
