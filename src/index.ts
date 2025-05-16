@@ -6,8 +6,9 @@ app.get("/", (req: Request, res: Response) => {
     res.send("Bem Vindo ao Curso de Node Js - ver5 - usando npm start");
 });
 
-app.get("/users", (req: Request, res: Response) => {
-    let usuarios = [{
+// lista global 
+
+let usuarios = [{
         nome: "Darth Vader",
         idade: 40
     }, {
@@ -17,8 +18,24 @@ app.get("/users", (req: Request, res: Response) => {
         nome: "Arthur Sahur",
         idade: 6
     }];
+
+// app get 
+
+app.get("/users", (req: Request, res: Response) => {    
     res.send(usuarios);
 });
+
+// app post 
+
+app.post("/users", (req: Request, res: Response) => {
+let user = req.body;
+usuarios.push(user);
+res.send({
+    message: "Usuario criado com sucesso!"
+});
+});
+
+// app listen 
 
 app.listen(3000, () => {
 console.log("Servidor ativo na porta 3000.");
