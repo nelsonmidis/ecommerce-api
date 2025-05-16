@@ -56,6 +56,16 @@ app.put("/users/:id", (req: Request, res: Response) => {
 
 });
 
+// app delete
+app.delete("/users/:id", (req: Request, res: Response) => {
+    let userId = Number(req.params.id);
+    let indexOf = usuarios.findIndex((user: User) => user.id === userId);
+    usuarios.splice(indexOf, 1);
+    res.send({
+        message: "Usuario removido com sucesso!"
+    });
+});
+
 // app listen 
 
 app.listen(3000, () => {
