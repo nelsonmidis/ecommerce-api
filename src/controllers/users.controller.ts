@@ -17,8 +17,13 @@ let usuarios: User[] = [];
 
 export class UsersController {
     // função getAll
-    static getAll(req: Request, res: Response) {
-        res.send(usuarios);
+    // FIRESTORE - CONTINUANDO MODIFICAÇÕES
+    static async getAll(req: Request, res: Response) {
+        const snapshot = await getFirestore().collection("users").get();
+        const users = snapshot.docs.map(doc => {
+        return doc.data() as User;
+        });
+        res.send(users);
     }
     // função getById
     static getById(req: Request, res: Response) {
@@ -27,7 +32,6 @@ let user = usuarios.find(user => user.id === userId);
 res.send(user);
 }
     // função save
-    // firestore - vamos começar por aqui
     static async save(req: Request, res: Response) {
     let user = req.body;
     // user.id = ++id;
