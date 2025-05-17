@@ -11,9 +11,6 @@ type User = {
     nome: String;
     email: String;
 };
-// let id = 0;
-
-let usuarios: User[] = [];
 
 export class UsersController {
     // função getAll
@@ -48,9 +45,6 @@ res.send(user);
     });
     }
     // função update
-    // CONTINUANDO MODIFICAÇÕES - FUNÇÃO UPDATE 
-    // depois dessas modificações de funções para firestore,
-    // teremos de apagar as linhas anteriores para variável
     static update(req: Request, res: Response) {
         let userId = req.params.id;
         let user = req.body as User; 
@@ -67,10 +61,12 @@ res.send(user);
     }
 
     // função delete
-    static delete(res: Response, req: Request) {
-    let userId = Number(req.params.id);
-    let indexOf = usuarios.findIndex((user: User) => user.id === userId);
-    usuarios.splice(indexOf, 1);
+    // CONTINUANDO MODIFICAÇÕES - FUNÇÃO UPDATE 
+    // depois dessas modificações de funções para firestore,
+    // teremos de apagar as linhas anteriores para variável
+    static async delete(req: Request, res: Response) {
+    let userId = req.params.id;
+    await getFirestore().collection("users").doc(userId).delete();
     res.send({
         message: "Usuario removido com sucesso!"
     });
