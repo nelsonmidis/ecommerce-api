@@ -1,5 +1,6 @@
 import { Request } from "express";
 import { Response } from "express";
+import {getFirestore} from "firebase-admin/firestore";
 
 
 // lista global 
@@ -10,7 +11,7 @@ type User = {
     nome: String;
     email: String;
 };
-let id = 0;
+// let id = 0;
 
 let usuarios: User[] = [];
 
@@ -26,12 +27,15 @@ let user = usuarios.find(user => user.id === userId);
 res.send(user);
 }
     // função save
-    static save(req: Request, res: Response) {
+    // firestore - vamos começar por aqui
+    static async save(req: Request, res: Response) {
     let user = req.body;
-    user.id = ++id;
-    usuarios.push(user);
+    // user.id = ++id;
+    // usuarios.push(user);
+    const userSalvo =await getFirestore().collection("users").add(user);
+
     res.send({
-        message: "Usuario criado com sucesso!"
+        message: `Usuario ${userSalvo.id} criado com sucesso!`
     });
     }
     // função update
