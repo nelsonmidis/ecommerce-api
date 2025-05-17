@@ -28,7 +28,6 @@ export class UsersController {
         res.send(users);
     }
     // função getById
-    // CONTINUANDO MODIFICAÇÕES - get by id 
     static async getById(req: Request, res: Response) {
 let userId = req.params.id;
 const doc = await getFirestore().collection("users").doc(userId).get();
@@ -42,8 +41,6 @@ res.send(user);
     // função save
     static async save(req: Request, res: Response) {
     let user = req.body;
-    // user.id = ++id;
-    // usuarios.push(user);
     const userSalvo =await getFirestore().collection("users").add(user);
 
     res.send({
@@ -51,12 +48,18 @@ res.send(user);
     });
     }
     // função update
+    // CONTINUANDO MODIFICAÇÕES - FUNÇÃO UPDATE 
+    // depois dessas modificações de funções para firestore,
+    // teremos de apagar as linhas anteriores para variável
     static update(req: Request, res: Response) {
-        let userId = Number(req.params.id);
-        let user = req.body; 
-        let indexOf = usuarios.findIndex(_user => _user.id === userId);
-        usuarios[indexOf].nome = user.nome;
-        usuarios[indexOf].email = user.email;
+        let userId = req.params.id;
+        let user = req.body as User; 
+        // este método set é novo para mim ↘️
+        getFirestore().collection("users").doc(userId).set({
+            nome: user.nome,
+            email: user.email
+        })
+        
         res.send({
             message: "Usuario alterado com sucesso!"
         })
