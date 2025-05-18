@@ -14,9 +14,11 @@ type User = {
 
 export class UsersController {
     // função getAll
+    // COLOCANDO UM ERRO DE PROPOSITO 
     static async getAll(req: Request, res: Response) {
         const snapshot = await getFirestore().collection("users").get();
         const users = snapshot.docs.map(doc => {
+            // throw new Error("Erro ao converter documentos.");
         return {
             id: doc.id,
             ...doc.data()
@@ -36,7 +38,6 @@ let user = {
 res.send(user);
 }
     // função save
-    // VAMOS COLOCAR ESPOSTA STATUS 201
     static async save(req: Request, res: Response) {
     let user = req.body;
     const userSalvo =await getFirestore().collection("users").add(user);
@@ -49,7 +50,6 @@ res.send(user);
     static update(req: Request, res: Response) {
         let userId = req.params.id;
         let user = req.body as User; 
-        // este método set é novo para mim ↘️
         getFirestore().collection("users").doc(userId).set({
             nome: user.nome,
             email: user.email
@@ -62,7 +62,6 @@ res.send(user);
     }
 
     // função delete
-    // COLOCAR STATUS NO CONTENT
     static async delete(req: Request, res: Response) {
     let userId = req.params.id;
     await getFirestore().collection("users").doc(userId).delete();
