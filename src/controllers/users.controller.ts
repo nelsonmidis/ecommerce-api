@@ -16,15 +16,21 @@ export class UsersController {
     // função getAll
     // COLOCANDO UM ERRO DE PROPOSITO 
     static async getAll(req: Request, res: Response) {
-        const snapshot = await getFirestore().collection("users").get();
-        const users = snapshot.docs.map(doc => {
-            // throw new Error("Erro ao converter documentos.");
-        return {
-            id: doc.id,
-            ...doc.data()
-        };
-        });
-        res.send(users);
+        try {
+            const snapshot = await getFirestore().collection("users").get();
+            const users = snapshot.docs.map(doc => {
+                // throw new Error("Erro ao converter documento");
+            return {
+                id: doc.id,
+                ...doc.data()
+            };
+            });
+            res.send(users);
+        } catch (error) {
+            res.status(500).send({
+                message: "Erro interno do Servidor!!"
+            });
+        }
     }
     // função getById
     static async getById(req: Request, res: Response) {
