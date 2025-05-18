@@ -36,11 +36,12 @@ let user = {
 res.send(user);
 }
     // função save
+    // VAMOS COLOCAR ESPOSTA STATUS 201
     static async save(req: Request, res: Response) {
     let user = req.body;
     const userSalvo =await getFirestore().collection("users").add(user);
 
-    res.send({
+    res.status(201).send({
         message: `Usuario ${userSalvo.id} criado com sucesso!`
     });
     }
@@ -61,15 +62,11 @@ res.send(user);
     }
 
     // função delete
-    // CONTINUANDO MODIFICAÇÕES - FUNÇÃO UPDATE 
-    // depois dessas modificações de funções para firestore,
-    // teremos de apagar as linhas anteriores para variável
+    // COLOCAR STATUS NO CONTENT
     static async delete(req: Request, res: Response) {
     let userId = req.params.id;
     await getFirestore().collection("users").doc(userId).delete();
-    res.send({
-        message: "Usuario removido com sucesso!"
-    });
+    res.status(204).end();
 }
 
 
