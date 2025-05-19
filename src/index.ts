@@ -1,4 +1,5 @@
-import express from "express";
+// import express, { NextFunction } from "express";
+import express, { Request, Response, NextFunction } from "express";
 import { initializeApp } from 'firebase-admin/app';
 import { routes } from "./routes/index";
 
@@ -8,6 +9,14 @@ const app = express();
 
 // nao sei o que significa
 routes(app);
+
+// esse cara pega todos os erros 
+// essa função tem 4 parâmetros
+app.use((error: Error, req: Request, res: Response, next: NextFunction) => {
+    res.status(500).send({
+        message: "Erro Interno do Servidor - novo metodo"
+    })
+});
 
 // app listen 
 

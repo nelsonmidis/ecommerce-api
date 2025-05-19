@@ -1,4 +1,4 @@
-import { Request } from "express";
+import { NextFunction, Request } from "express";
 import { Response } from "express";
 import {getFirestore} from "firebase-admin/firestore";
 
@@ -15,7 +15,8 @@ type User = {
 export class UsersController {
     // função getAll
     // COLOCANDO UM ERRO DE PROPOSITO - usando try catch
-    static async getAll(req: Request, res: Response) {
+    // RECEBENDO NOVO TRATAMENTO DE EWRROS - AULA 4 24. 
+    static async getAll(req: Request, res: Response, next: NextFunction) {
         try {
             const snapshot = await getFirestore().collection("users").get();
             const users = snapshot.docs.map(doc => {
@@ -27,14 +28,12 @@ export class UsersController {
             });
             res.send(users);
         } catch (error) {
-            res.status(500).send({
-                message: "Erro interno do Servidor!!"
-            });
+            next(error);
         }
     }
     // função getById
     // TB COLOCANDO TRY CATCH
-    static async getById(req: Request, res: Response) {
+    static async getById(req: Request, res: Response, next: NextFunction) {
 try {
     let userId = req.params.id;
 const doc = await getFirestore().collection("users").doc(userId).get();
@@ -45,14 +44,11 @@ let user = {
     // throw new Error("Erro ao ENVIAR RESPOSTA");
 res.send(user);
 } catch (error) {
-
-            res.status(500).send({
-                message: "Erro interno do Servidor no getById!!"
-            });    
+    next(error);
 }
 }
     // função save
-    static async save(req: Request, res: Response) {
+    static async save(req: Request, res: Response, next: NextFunction) {
         try {
             
     let user = req.body;
@@ -64,15 +60,15 @@ res.send(user);
     });
     
         } catch (error) {
-                res.status(500).send({
-                message: "Erro interno do Servidor no SAVE!!"
-            });            
+            next(error);
         }
     }
 
 
     // função update
-    static update(req: Request, res: Response) {
+    static update(req: Request, res: Response, next: NextFunction) {
+        try {
+            
         let userId = req.params.id;
         let user = req.body as User; 
         getFirestore().collection("users").doc(userId).set({
@@ -84,11 +80,14 @@ res.send(user);
             message: "Usuario alterado com sucesso!"
         })
     
+        } catch (error) {
+            next(error);
+        }
     }
 
     // função delete
     // ESTOU COLOCANDO TRY CATCH
-    static async delete(req: Request, res: Response) {
+    static async delete(req: Request, res: Response, next: NextFunction) {
         try {
     let userId = req.params.id;
         // throw new Error("Erro ao DELETAR REGISTRO");
@@ -96,12 +95,7 @@ res.send(user);
     res.status(204).end();
 
         } catch (error) {
-            
-                res.status(500).send({
-                message: "Erro interno do Servidor no DELETE!!"
-            });            
-        
-            
+            next(error);
         }
     }
 
