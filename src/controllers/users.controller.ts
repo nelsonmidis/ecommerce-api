@@ -1,6 +1,8 @@
 import { NextFunction, Request } from "express";
 import { Response } from "express";
 import {getFirestore} from "firebase-admin/firestore";
+import { ValidationError } from "../errors/validation.error";
+import { NotFoundError } from "../errors/not-found.error";
 
 
 // lista global 
@@ -36,13 +38,16 @@ export class UsersController {
     static async getById(req: Request, res: Response, next: NextFunction) {
 try {
     let userId = req.params.id;
-const doc = await getFirestore().collection("users").doc(userId).get();
-let user = {
-    id: doc.id,
-    ...doc.data()
-}
-    // throw new Error("Erro ao ENVIAR RESPOSTA");
-res.send(user);
+    const doc = await getFirestore().collection("users").doc(userId).get();
+    if (doc.exists) {
+    res.send({
+        id: doc.id,
+        ...doc.data()
+    });
+    } else {
+        throw new NotFoundError("Usuário não encontrado.");
+    }
+    
 } catch (error) {
     next(error);
 }
@@ -50,8 +55,12 @@ res.send(user);
     // função save
     static async save(req: Request, res: Response, next: NextFunction) {
         try {
-            
-    let user = req.body;
+            let user = req.body;
+            // FUNÇÃO DE VALIDAÇÃO CUSTOMIZADA 
+            // AULA 4 26 
+            if(!user.email || user.email?.length === 0) {
+                throw new ValidationError("Forneça seu e-mail. Ele é obrigatório!");
+            }
         // throw new Error("Erro ao GRAVAR REGISTRO");
     const userSalvo =await getFirestore().collection("users").add(user);
 
@@ -66,12 +75,12 @@ res.send(user);
 
 
     // função update
-    static update(req: Request, res: Response, next: NextFunction) {
+    static async update(req: Request, res: Response, next: NextFunction) {
         try {
             
         let userId = req.params.id;
         let user = req.body as User; 
-        getFirestore().collection("users").doc(userId).set({
+        await getFirestore().collection("users").doc(userId).set({
             nome: user.nome,
             email: user.email
         })
