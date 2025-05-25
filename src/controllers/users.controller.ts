@@ -45,7 +45,7 @@ try {
         ...doc.data()
     });
     } else {
-        throw new NotFoundError("Usuário não encontrado.");
+        throw new NotFoundError("Usuário não encontrado para Busca.");
     }
     
 } catch (error) {
@@ -80,7 +80,11 @@ try {
             
         let userId = req.params.id;
         let user = req.body as User; 
-        await getFirestore().collection("users").doc(userId).set({
+        let docRef = getFirestore().collection("users").doc(userId);
+
+        if ((await docRef.get()).exists) {
+        
+            await docRef.set({
             nome: user.nome,
             email: user.email
         })
@@ -88,6 +92,12 @@ try {
         res.send({
             message: "Usuario alterado com sucesso!"
         })
+
+        } else {
+            throw new NotFoundError("Usuário não encontrado para Update");
+        }
+
+
     
         } catch (error) {
             next(error);
