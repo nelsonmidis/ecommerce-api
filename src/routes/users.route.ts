@@ -2,6 +2,7 @@ import express from "express";
 // import { Request, Response } from "express";
 import { UsersController } from "../controllers/users.controller";
 export const userRoutes = express.Router();
+// import expressAsyncHandler = require("express-async-handler");
 
 // userRoutes get 
 // isto é um endpoint

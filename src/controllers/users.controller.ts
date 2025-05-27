@@ -34,23 +34,18 @@ export class UsersController {
         }
     }
     // função getById
-    // TB COLOCANDO TRY CATCH
+    // try catch foi retirado
     static async getById(req: Request, res: Response, next: NextFunction) {
-try {
     let userId = req.params.id;
-    const doc = await getFirestore().collection("users").doc(userId).get();
-    if (doc.exists) {
-    res.send({
-        id: doc.id,
-        ...doc.data()
-    });
-    } else {
-        throw new NotFoundError("Usuário não encontrado para Busca.");
-    }
-    
-} catch (error) {
-    next(error);
-}
+        const doc = await getFirestore().collection("users").doc(userId).get();
+        if (doc.exists) {
+        res.send({
+            id: doc.id,
+            ...doc.data()
+        });
+        } else {
+            throw new NotFoundError("Usuário não encontrado para Busca.");
+        }
 }
     // função save
     static async save(req: Request, res: Response, next: NextFunction) {
@@ -76,8 +71,6 @@ try {
 
     // função update
     static async update(req: Request, res: Response, next: NextFunction) {
-        try {
-            
         let userId = req.params.id;
         let user = req.body as User; 
         let docRef = getFirestore().collection("users").doc(userId);
@@ -95,12 +88,6 @@ try {
 
         } else {
             throw new NotFoundError("Usuário não encontrado para Update");
-        }
-
-
-    
-        } catch (error) {
-            next(error);
         }
     }
 
